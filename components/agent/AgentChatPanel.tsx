@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { AgentMessage, ScanResultItem, InstrumentAnalysis, PortfolioHealthReport } from "@/types/agent";
+import { AgentMessage, ScanResultItem } from "@/types/agent";
 import { formatINR, formatPercentage, getPnlColor } from "@/lib/utils/format";
 import { ChartIframe } from "@/components/charts/ChartIframe";
 import { Badge } from "@/components/ui/Badge";
@@ -15,18 +15,12 @@ import {
   Bot,
   User,
   ShieldCheck,
-  TrendingUp,
-  BarChart3,
   Search,
-  Layers,
   ArrowRight,
   AlertTriangle,
-  CheckCircle2,
   HelpCircle,
   Trash2,
   X,
-  ExternalLink,
-  ChevronRight,
   Loader2,
 } from "lucide-react";
 
@@ -51,7 +45,7 @@ const INITIAL_GREETING: AgentMessage = {
   role: "assistant",
   mode: "RESEARCH",
   content:
-    "👋 Hello! I am your **TradePilot AI Copilot**.\n\nI can scan universes like NIFTY 500, calculate technical indicators (SMA, EMA, RSI, MACD, Bollinger Bands, ATR, ADX), evaluate moving-average crossovers, analyze setups, and audit your portfolio health.\n\n*Note: In Phase 1, I operate strictly in **RESEARCH MODE** (Read-Only / No Live Orders).*",
+    "👋 Hello! I am your **TradePilot AI Copilot**, powered by **Google Gemini**.\n\nI can scan universes like NIFTY 500, calculate technical indicators (SMA, EMA, RSI, MACD, Bollinger Bands, ATR, ADX), evaluate moving-average crossovers, analyze setups, and audit your portfolio health.\n\n*Note: In Phase 1, I operate strictly in **RESEARCH MODE** (Read-Only / No Live Orders).*",
   timestamp: new Date().toISOString(),
 };
 
@@ -63,7 +57,6 @@ export function AgentChatPanel({
   const [messages, setMessages] = useState<AgentMessage[]>([INITIAL_GREETING]);
   const [inputQuery, setInputQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [chartInfo, setChartInfo] = useState<{ symbol: string; exchange?: "NSE" | "BSE" } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -142,7 +135,7 @@ export function AgentChatPanel({
               <h3 className="text-sm font-bold tracking-tight text-white">TradePilot Copilot</h3>
               <Badge variant="info" className="text-[9px] font-mono">RESEARCH MODE</Badge>
             </div>
-            <span className="text-[10px] text-slate-400">Deterministic Market Scanner &amp; AI Analysis</span>
+            <span className="text-[10px] text-slate-400">Gemini AI + Deterministic Market Scanner</span>
           </div>
         </div>
         <div className="flex items-center gap-1.5">
@@ -248,14 +241,11 @@ export function AgentChatPanel({
                           <td className="py-2 px-3 text-center font-sans">
                             <div className="flex items-center justify-center gap-1">
                               <button
-                                onClick={() => {
-                                  onSelectInstrument && onSelectInstrument(item.symbol, item.exchange as "NSE" | "BSE");
-                                  setChartInfo({ symbol: item.symbol, exchange: item.exchange as "NSE" | "BSE" });
-                                }}
-                                title="Open in Chart & Terminal"
+                                onClick={() => onSelectInstrument?.(item.symbol, item.exchange as "NSE" | "BSE")}
+                                title="Open in Terminal"
                                 className="px-2 py-1 rounded bg-slate-800 hover:bg-cyan-600 text-slate-200 hover:text-white text-[10px] transition-colors"
                               >
-                                Chart
+                                Terminal
                               </button>
                               <button
                                 onClick={() => handleAnalyzeSymbol(item.symbol)}
@@ -296,11 +286,6 @@ export function AgentChatPanel({
                       <div className="text-[10px] text-slate-500 font-sans">Current Price</div>
                       <div className="font-bold text-slate-200">{formatINR(msg.data.analysis.indicators.price)}</div>
                     </div>
-                    {chartInfo && (
-                      <div className="mt-4">
-                        <ChartIframe symbol={chartInfo.symbol} exchange={chartInfo.exchange} />
-                      </div>
-                    )}
                     <div className="p-2 rounded bg-slate-900 border border-slate-800">
                       <div className="text-[10px] text-slate-500 font-sans">20 SMA</div>
                       <div className="font-semibold text-slate-300">{formatINR(msg.data.analysis.indicators.sma20)}</div>
@@ -330,6 +315,11 @@ export function AgentChatPanel({
                       <div className="font-semibold text-slate-300">₹{msg.data.analysis.indicators.supportLevel} / ₹{msg.data.analysis.indicators.resistanceLevel}</div>
                     </div>
                   </div>
+
+                  <ChartIframe
+                    symbol={msg.data.analysis.symbol}
+                    exchange={msg.data.analysis.exchange as "NSE" | "BSE"}
+                  />
 
                   {/* Action */}
                   {onSelectInstrument && (
@@ -387,7 +377,7 @@ export function AgentChatPanel({
             </div>
             <div className="rounded-xl p-3.5 bg-[#0f172a] border border-slate-800 text-slate-300 flex items-center gap-2.5 text-xs">
               <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
-              <span>Scanning universe &amp; calculating indicators deterministically...</span>
+              <span>Gemini is analyzing your query...</span>
             </div>
           </div>
         )}
@@ -425,7 +415,7 @@ export function AgentChatPanel({
         </form>
         <div className="flex items-center justify-between text-[10px] text-slate-500 mt-2 px-1">
           <span className="flex items-center gap-1">
-            <ShieldCheck className="w-3 h-3 text-emerald-400" /> Deterministic math &amp; Zero live execution in Phase 1
+            <ShieldCheck className="w-3 h-3 text-emerald-400" /> Powered by Gemini · Deterministic math · No live orders
           </span>
           <span className="font-mono">RESEARCH MODE</span>
         </div>

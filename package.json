@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "iron-session": "^8.0.4",
     "lightweight-charts": "^4.2.2",
     "lucide-react": "^0.454.0",

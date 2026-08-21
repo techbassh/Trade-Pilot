@@ -18,14 +18,23 @@ export function getKiteApiSecret(): string {
   return secret;
 }
 
-export function getKiteLoginUrl(): string {
+export function getAppBaseUrl(requestOrigin?: string): string {
+  const configured = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  if (configured) return configured.replace(/\/$/, "");
+  if (requestOrigin) return requestOrigin.replace(/\/$/, "");
+  return "http://localhost:3000";
+}
+
+export function getKiteRedirectUrl(requestOrigin?: string): string {
+  const configured = process.env.KITE_REDIRECT_URL?.trim();
+  if (configured) return configured;
+  return `${getAppBaseUrl(requestOrigin)}/api/kite/callback`;
+}
+
+export function getKiteLoginUrl(requestOrigin?: string): string {
   const apiKey = getKiteApiKey();
-  const redirectUrl = process.env.KITE_REDIRECT_URL;
-  let url = `https://kite.zerodha.com/connect/login?v=3&api_key=${encodeURIComponent(apiKey)}`;
-  if (redirectUrl) {
-    url += `&redirect_url=${encodeURIComponent(redirectUrl)}`;
-  }
-  return url;
+  const redirectUrl = getKiteRedirectUrl(requestOrigin);
+  return `https://kite.zerodha.com/connect/login?v=3&api_key=${encodeURIComponent(apiKey)}&redirect_url=${encodeURIComponent(redirectUrl)}`;
 }
 
 export function generateChecksum(apiKey: string, requestToken: string, apiSecret: string): string {

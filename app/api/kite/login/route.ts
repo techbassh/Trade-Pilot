@@ -1,15 +1,15 @@
-import { NextResponse } from "next/server";
-import { getKiteLoginUrl } from "@/lib/kite/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { getAppBaseUrl, getKiteLoginUrl } from "@/lib/kite/auth";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const loginUrl = getKiteLoginUrl();
+    const loginUrl = getKiteLoginUrl(request.nextUrl.origin);
     return NextResponse.redirect(loginUrl);
   } catch (error: any) {
     console.error("Error generating Kite login URL:", error);
-    const loginRedirect = new URL("/login", process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000");
+    const loginRedirect = new URL("/login", getAppBaseUrl(request.nextUrl.origin));
     loginRedirect.searchParams.set("error", "CONFIG_ERROR");
     loginRedirect.searchParams.set("message", error.message || "Failed to initiate Zerodha login");
     return NextResponse.redirect(loginRedirect);

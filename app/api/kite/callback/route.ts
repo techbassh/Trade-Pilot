@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { exchangeRequestToken, getKiteApiKey } from "@/lib/kite/auth";
+import { exchangeRequestToken, getAppBaseUrl, getKiteApiKey } from "@/lib/kite/auth";
 import { getServerSession } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   const status = searchParams.get("status");
   const action = searchParams.get("action");
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const baseUrl = getAppBaseUrl(request.nextUrl.origin);
 
   // Check if user rejected or cancelled login on Kite
   if (status === "cancelled" || action === "cancelled") {
