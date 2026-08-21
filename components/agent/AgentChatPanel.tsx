@@ -5,7 +5,6 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { AgentMessage, ScanResultItem } from "@/types/agent";
 import { formatINR, formatPercentage, getPnlColor } from "@/lib/utils/format";
-import { ChartIframe } from "@/components/charts/ChartIframe";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -316,11 +315,6 @@ export function AgentChatPanel({
                     </div>
                   </div>
 
-                  <ChartIframe
-                    symbol={msg.data.analysis.symbol}
-                    exchange={msg.data.analysis.exchange as "NSE" | "BSE"}
-                  />
-
                   {/* Action */}
                   {onSelectInstrument && (
                     <Button
@@ -331,7 +325,7 @@ export function AgentChatPanel({
                       }
                       className="w-full text-xs text-cyan-400 hover:text-cyan-300 py-1.5 mt-2 border-slate-700"
                     >
-                      <span>Load {msg.data.analysis.symbol} on Terminal &amp; Chart</span>
+                      <span>Load {msg.data.analysis.symbol} on Terminal</span>
                       <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
                     </Button>
                   )}

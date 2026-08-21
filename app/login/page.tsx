@@ -2,7 +2,7 @@
 
 import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Compass, ShieldCheck, Zap, Lock, ArrowRight, AlertCircle, BarChart2 } from "lucide-react";
+import { Compass, ShieldCheck, Zap, Lock, ArrowRight, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 function LoginContent() {
@@ -100,8 +100,8 @@ function LoginContent() {
               <span>Real-time WebSocket &amp; SSE feed</span>
             </div>
             <div className="flex items-start gap-2 text-[11px] text-slate-400">
-              <BarChart2 className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
-              <span>TradingView charting engine</span>
+              <Lock className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
+              <span>Order execution with confirmation safeguards</span>
             </div>
           </div>
         </div>

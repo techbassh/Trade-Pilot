@@ -8,7 +8,6 @@ import { HoldingsTable } from "@/components/dashboard/HoldingsTable";
 import { PositionsTable } from "@/components/dashboard/PositionsTable";
 import { OrdersTable } from "@/components/dashboard/OrdersTable";
 import { FundsCard } from "@/components/dashboard/FundsCard";
-import { TradingChart } from "@/components/charts/TradingChart";
 import { OrderPanel } from "@/components/trading/OrderPanel";
 import { AgentChatPanel } from "@/components/agent/AgentChatPanel";
 import { Badge } from "@/components/ui/Badge";
@@ -52,7 +51,7 @@ export default function DashboardPage() {
   const [funds, setFunds] = useState<Funds | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
 
-  // Selected Instrument for Chart & Order Panel
+  // Selected Instrument for Order Panel
   const [selectedSymbol, setSelectedSymbol] = useState("RELIANCE");
   const [selectedExchange, setSelectedExchange] = useState<"NSE" | "BSE">("NSE");
   const [selectedToken, setSelectedToken] = useState<number>(738561);
@@ -249,8 +248,6 @@ export default function DashboardPage() {
 
   const currentQuote = quotes[selectedSymbol];
   const currentLtp = currentQuote?.lastPrice;
-  const currentChange = currentQuote?.netChange;
-  const currentChangePct = currentQuote?.percentageChange;
 
   return (
     <div className="min-h-screen bg-[#070a12] text-slate-100 flex flex-col">
@@ -293,7 +290,7 @@ export default function DashboardPage() {
           />
         )}
 
-        {/* Tab 1: Overview (Main Cockpit: Chart, Order Panel, Holdings, Funds) */}
+        {/* Tab 1: Overview (Order Panel, Holdings, Funds) */}
         {activeTab === "overview" && (
           <div className="space-y-5">
             {/* AI Copilot Quick Launcher Banner */}
@@ -323,31 +320,16 @@ export default function DashboardPage() {
               </Button>
             </div>
 
-            {/* Top Grid: TradingView Chart + Quick Order Terminal */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              {/* Chart (2 Cols on desktop) */}
-              <div className="lg:col-span-2 min-h-[420px]">
-                <TradingChart
-                  symbol={selectedSymbol}
-                  instrumentToken={selectedToken}
-                  livePrice={currentLtp}
-                  dayChange={currentChange}
-                  dayChangePercentage={currentChangePct}
-                  onSymbolSelect={handleSelectInstrument}
-                />
-              </div>
-
-              {/* Quick Order Terminal & Funds Card (1 Col) */}
-              <div className="space-y-4">
-                <OrderPanel
-                  selectedSymbol={selectedSymbol}
-                  selectedExchange={selectedExchange}
-                  currentLtp={currentLtp}
-                  onOrderPlaced={handleOrderPlaced}
-                  onSymbolSelect={handleSelectInstrument}
-                />
-                <FundsCard funds={funds} />
-              </div>
+            {/* Quick Order Terminal & Funds */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <OrderPanel
+                selectedSymbol={selectedSymbol}
+                selectedExchange={selectedExchange}
+                currentLtp={currentLtp}
+                onOrderPlaced={handleOrderPlaced}
+                onSymbolSelect={handleSelectInstrument}
+              />
+              <FundsCard funds={funds} />
             </div>
 
             {/* Bottom Grid: Holdings and Positions preview */}
